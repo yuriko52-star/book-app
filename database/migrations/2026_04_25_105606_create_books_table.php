@@ -16,8 +16,8 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->string('title');
             $table->string('author')->nullable();
-            $table->string('status')->default('unread');
-            $table->integer('rating')->nullable();
+            $table->enum('status', ['unread', 'reading', 'finished'])->default('unread');
+            $table->unsignedTinyInteger('rating')->nullable();
             $table->text('memo')->nullable();
             $table->date('started_at')->nullable();
             $table->date('finished_at')->nullable();

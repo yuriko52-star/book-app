@@ -12,7 +12,10 @@ class BookController extends Controller
      */
     public function index()
     {
-        //
+        $books = Book::where('user_id', auth()->id())
+            ->latest()
+            ->paginate(5);
+            return view('books.index',compact('books'));
     }
 
     /**
@@ -20,7 +23,7 @@ class BookController extends Controller
      */
     public function create()
     {
-        //
+        return view('books.create');
     }
 
     /**
@@ -28,15 +31,29 @@ class BookController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'rating' => 'nullable|integer|min:1|max:5',
+        ]);
+        Book::create([
+            'user_id' => auth()->id(),
+            'title' => $request->title,
+            'author' => $request->author,
+            'status' => $request->status,
+            'rating' => $request->rating,
+            'memo' => $request->memo,
+            'started_at' => $request->started_at,
+            'finished_at' => $request->finished_at,
+        ]);
+        return redirect()->route('books.index')->with('success','本を登録しました');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Book $book)
+    /*public function show(Book $book)
     {
-        //
+        
     }
 
     /**
@@ -44,7 +61,8 @@ class BookController extends Controller
      */
     public function edit(Book $book)
     {
-        //
+        $this->authorizeBook($book);
+        return view('books.edit',compact('book'));
     }
 
     /**
@@ -52,7 +70,14 @@ class BookController extends Controller
      */
     public function update(Request $request, Book $book)
     {
-        //
+        $this->authorizeBook($book);
+
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'rating' => 'nullable|integer|min:1|max:5',
+        ]);
+        $book->update($request->all());
+        return redirect()->route('books.index')->with('success','更新しました');
     }
 
     /**
@@ -60,6 +85,16 @@ class BookController extends Controller
      */
     public function destroy(Book $book)
     {
-        //
+        $this->authorizeBook($book);
+        $book->delete();
+        return back()->with('success','削除しました');
     }
+    private function authorizeBook(Book $book) 
+    {
+        if($book->user_id !== auth()->id()) {
+            abort(403);
+        }
+    }
+
+    
 }
