@@ -33,6 +33,7 @@ class BookController extends Controller
     {
         $request->validate([
             'title' => 'required|string|max:255',
+            'status' => 'required|in:unread,reading,finished',
             'rating' => 'nullable|integer|min:1|max:5',
         ]);
         Book::create([
@@ -74,6 +75,7 @@ class BookController extends Controller
 
         $request->validate([
             'title' => 'required|string|max:255',
+            'status' => 'required|in:unread,reading,finished',
             'rating' => 'nullable|integer|min:1|max:5',
         ]);
         $book->update($request->all());

@@ -33,6 +33,11 @@
                     <option value="reading" {{ old('status',$book->status) === 'reading' ? 'selected' : '' }}>読書中</option>
                     <option value="finished" {{ old('status',$book->status) === 'finished' ? 'selected' : '' }}>読了</option>
                 </select>
+                @error('status')
+                <div class="text-red-600 text-sm mt-1">
+                    {{ $message }}
+                </div>
+                @enderror
                 <label for="" class="block mb-1 font-medium">評価</label>
                 <select name="rating" id="" class="w-full borer rounded px-3 py-2">
                     
