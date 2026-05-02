@@ -10,12 +10,20 @@ class BookController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $books = Book::where('user_id', auth()->id())
-            ->latest()
-            ->paginate(5);
-            return view('books.index',compact('books'));
+         
+        $query = Book::where('user_id', auth()->id());
+        if($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+        $books = $query->latest()->paginate(5);
+
+        $finishedCount = Book::where('user_id', auth()->id())
+            ->where('status','finished')
+            ->whereMonth('finished_at', now()->month)
+            ->count();
+            return view('books.index',compact('books','finishedCount'));
     }
 
     /**

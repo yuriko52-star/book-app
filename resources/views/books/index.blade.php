@@ -15,6 +15,20 @@
             + 本を追加
         </a>
     </div>
+    <!-- フィルター -->
+     <form action="{{ route('books.index') }}" method="get" class="m-6 flex gap-4">
+        <select name="status" id="" class="border rounded px-4 py-1">
+            <option value="">すべて</option>
+            <option value="unread" {{request('status') === 'unread' ? 'selected' : ''}}>未読</option>
+            <option value="reading" {{request('status') === 'reading' ? 'selected' : ''}}>読書中</option>
+            <option value="finished"{{request('status') === 'finished' ? 'selected' : ''}}>完了</option>
+        </select>
+        <button class="bg-gray-200 px-3 py-1 rounded">絞り込み</button>
+     </form>
+     <!-- 集計 -->
+      <div class="mb-4 ml-6 text-sm text-gray-600">
+            今月の読了数:{{ $finishedCount }}冊
+      </div>
     <div class="grid gap-4 p-4 md:grid-cols-2 lg:grid-cols-3">
        
         @forelse($books as $book)
